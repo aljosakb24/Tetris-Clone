@@ -131,7 +131,113 @@ function draw(){
     if(keyIsDown(DOWN_ARROW)){
         updateEvery = 2;
     } else{
-        updateEvery = updateEveryCurrent
+        updateEvery = updateEveryCurrent;
     }
 
+    // Update game stats
+    if(!pauseGame){
+        ticks++;
+        if (ticks >=  updateEvery){
+            ticks = 0;
+            fallingPiece.fall(fallSpeed);
+        }
+    }
+
+    // Show the grid pieces
+    for(let i = 0; i < gridPieces.length; i++ ){
+        gridPieces[i].show();
+    }
+
+    //Show the fading lines
+    for(let i = 0; i < lineFades.length; i++){
+        lineFades[i].show();
+    }
+    // Process the grid workers
+
+    if(gridWorkers.length > 0){
+        gridWorkers[0].work();
+    }
+    
+
+     // Explain the controls
+     textAlign(CENTER);
+     fill(255);
+     noStroke();
+     textSize(14);
+     text("Controls:\n↑\n← ↓ →\n", 75, 155);
+     text("Left and Right:\nmove side to side", 75, 230);
+     text("Up:\nrotate", 75, 280);
+     text("Down:\nfall faster", 75, 330);
+     text("R:\nreset game", 75, 380);
+
+
+     // Show the game over text
+     if(gameOver){
+        fill(colorDark);
+        textSize(54);
+        textAlign(CENTER)
+        text("Game Over!", 300, 270);
+     }
+
+     //Draw the game border
+     strokeWeight(3)
+     stroke('#304550');
+     noFill();
+     rect(0,0, width,height);
+
+
+}
+
+// Function called when a key is pressed
+
+function keyPressed(){
+    if(keyCode === 82){
+        // 'R' key
+        resetGame();
+    }
+    if(!pauseGame){
+        if(keyCode === LEFT_ARROW){
+            fallingPiece.input(LEFT_ARROW);          
+            
+        }else if (keyCode === RIGHT_ARROW){
+            fallingPiece.input(RIGHT_ARROW);
+        }
+        if(keyCode === UP_ARROW){
+            fallingPiece.input(UP_ARROW);
+        }
+    }
+}
+
+
+// Class for the falling piece
+class PlayPiece{
+    constructor(){
+        this.pos = createVector(0,0);
+        this.rotation = 0;
+        this.nextPieceType = Math.floor(Math.random() * 7);
+        this.nextPieces = [];
+        this.pieceType = 0;
+        this.pieces = [];
+        this.orientation = [];
+        this.fallen = false
+    }
+
+    // Generate the next piece
+    nextPiece(){
+        this.nextPieceType = pseudoRandom(this.pieceType);
+        this.nextPieces = [];
+
+        const points = orientPoints(this.nextPieceType, 0);
+        let xx = 525, yy = 490;
+
+        if(this.nextPieceType !== 0 && this.nextPieceType !== 3 && this.nextPieceType !== 5){
+            xx += (gridSpace * 0.5);
+        }
+
+        if(this.nextPieceType == 5){
+            xx -= (gridSpace * 0.5);
+        }
+
+        for(let i = 0; i < 4; i++)
+    }
 }
