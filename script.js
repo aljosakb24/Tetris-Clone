@@ -238,6 +238,56 @@ class PlayPiece{
             xx -= (gridSpace * 0.5);
         }
 
-        for(let i = 0; i < 4; i++)
+        for(let i = 0; i < 4; i++){
+            this.nextPieces.push(new Square(xx + points[i][0] * gridSpace, yy + points[1] * gridSpace, this.nextPieceType));
+        }
     }
+
+    // Make piece fall
+
+    fall(amount){
+        if(!this.futureCollision(0, amount, this.rotation)){
+            this.addPos(0, amount);
+            this.fallen = true;
+
+        }else{
+            if(!this.fallen){
+                pauseGame = true;
+                gameOver = true;
+            }else{
+                this.commitShape();
+            }
+        }
+    }
+
+    // Reset the current piece
+
+    resetPiece(){
+        this.rotation = 0;
+        this.fallen = false;
+        this.pos.x = 330;
+        this.pos.y = -60;
+
+        this.pieceType = this.nextPieceType;
+
+        this.nextPiece();
+        this.newPoints();
+    }
+
+    // Generate the pointts for current piece
+
+    newPoints(){
+        const points = orientPoints(this.pieceType, this.rotation);
+        this.orientation = points;
+        this.pieces = [];
+
+        for(let i = 0; i < points.length; i++){
+            this.pieces.push(new Square(this.pos.x + points[i][0]* gridSpace, this.pos.y + points[i][1] * gridSpace, this.pieceType));
+
+        }
+
+    }
+    // Update the position of the current piece
+
+
 }
