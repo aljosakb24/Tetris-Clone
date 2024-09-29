@@ -402,10 +402,96 @@ class PlayPiece{
 
     commitShape(){
         for (let i = 0; i < this.pieces.length; i++){
-            gridPieces.push(this.pieces[i])
+            gridPieces.push(this.pieces[i]);
         }
+        this.resetPiece();
+        analyzeGrid();
     }
 
 
 
+}
+
+// Class for each square in a piece
+class Square{
+    constructor(x,y, type){
+        this.pos = createVector(x,y);
+        this.type = type;
+    }
+
+    // Show the square
+    show(){
+        strokeWeight(2);
+        const colorDark = "#092e1d";
+        const colorMid = colors[this.type];
+
+        fill(colorMid);
+        stroke(25)
+        rect(this.pos.x, this.pos.y, gridSpace - 1, gridSpace -1);
+
+        noStroke();
+        fill(255);
+        rect(this.pos.x +6, this.pos.y + 6, 18 , 2);
+        rect(this.pos.x +6, this.pos.y + 6, 2 , 16);
+        fill(25)
+        rect(this.pos.x +6, this.pos.y + 20, 18 , 2);
+        rect(this.pos.x +22, this.pos.y + 6, 2 , 16);
+    }
+}
+
+// Generate a pseudo-random number for the next piece
+
+function pseudoRandom(previous){
+    let roll = Math.floor(Math.random()*8);
+    if(roll === previous || roll === 7){
+        roll = Math.floor(Math.random()*7);
+
+    }
+    return roll;
+
+
+}
+
+//  Analyze the grid and clear lines if necessary
+function analyzeGrid(){
+    let score = 0;
+    while(checkLines()){
+        score+=100;
+        linesCleared +=1;
+        if (linesCleared % 10 === 0){
+            currentLevel += 1;
+            if(updateEveryCurrent>2){
+                updateEveryCurrent -= 1;
+            }
+        }
+    }
+    if (score > 100){
+        score *=2
+    }
+    currentScore += score
+}
+
+// check if there are any complete lines in the grid
+
+function checkLines() {
+    for (let y = 0; y < height; y += gridSpace) {
+        let count = 0;
+        for (let i = 0; i < gridPieces.length; i++) {
+            if (gridPieces[i].pos.y === y) {
+                count++;
+            }
+        }
+        if (count === 10) {
+            // Remove the pieces at this y-coordinate
+            gridPieces = gridPieces.filter(piece => piece.pos.y !== y);
+            // Move down the pieces above this y-coordinate
+            for (let i = 0; i < gridPieces.length; i++) {
+                if (gridPieces[i].pos.y < y) {
+                    gridPieces[i].pos.y += gridSpace;
+                }
+            }
+            return true;
+        }
+    }
+    return false;
 }
