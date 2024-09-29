@@ -376,6 +376,36 @@ class PlayPiece{
         }
     }
 
+    // Rotate the current piece
+
+    rotate(){
+        this.rotation +=1;
+        if(this.rotation > 3){
+            this.rotation=0;
+        }
+        this.updatePoints();
+
+
+    }
+
+    // Show current piece
+
+    show(){
+        for(let i = 0; i < this.pieces.length; i++){
+            this.pieces[i].show()
+        }
+        for(let i = 0; i < this.nextPiece.length; i++){
+            this.nextPieces[i].show();
+        }
+    }
+    // Commit the current shape to the grid
+
+    commitShape(){
+        for (let i = 0; i < this.pieces.length; i++){
+            gridPieces.push(this.pieces[i])
+        }
+    }
+
 
 
 }
